@@ -1,6 +1,6 @@
 import { Bot } from 'grammy';
 import { startCommand } from './commands/start';
-import { hexceptionHandlers } from './features/hexception/handlers/menuHandlers';
+import { hexceptionHandlers } from './features/hexception/handlers';
 import { worldmapHandlers } from './features/worldmap/handlers/menuHandlers';
 import { errorHandler } from './middlewares/errorHandler';
 import { BotContext } from './types';
