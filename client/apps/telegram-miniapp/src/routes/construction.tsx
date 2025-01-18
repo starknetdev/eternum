@@ -18,7 +18,6 @@ const BUILDINGS = [
 export default function Construction() {
   const handleBuild = (buildingName: string) => {
     console.log(`Building ${buildingName}`);
-    // TODO: Implement actual building logic
   };
 
   return (
@@ -28,7 +27,7 @@ export default function Construction() {
         <p className="text-gray-300">Select a building to construct</p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 px-4">
+      <div className="grid grid-cols-2 gap-6 px-4">
         {BUILDINGS.map((building) => (
           <BuildingCard
             key={building}
