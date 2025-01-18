@@ -1,5 +1,7 @@
 import { Bot } from 'grammy';
 import { startCommand } from './commands/start';
+import { hexceptionHandlers } from './features/hexception/handlers/menuHandlers';
+import { worldmapHandlers } from './features/worldmap/handlers/menuHandlers';
 import { errorHandler } from './middlewares/errorHandler';
 import { BotContext } from './types';
 import { getConfig } from './utils/config';
@@ -18,6 +20,8 @@ async function main() {
 
   // Middlewares
   bot.use(startCommand);
+  bot.use(hexceptionHandlers);
+  bot.use(worldmapHandlers);
 
   // Error handling
   bot.catch(errorHandler);
