@@ -10,7 +10,7 @@ constructionHandler.hears(HEXCEPTION_KEYBOARD.CONSTRUCTION, async (ctx) => {
 
   const keyboard = new InlineKeyboard().webApp(
     '🏗️ Open Construction Manager',
-    'https://127.0.0.1:5174/construction',
+    'http://192.168.31.40:5174/construction',
   );
 
   await ctx.reply('🏗️ Manage your construction projects:', {

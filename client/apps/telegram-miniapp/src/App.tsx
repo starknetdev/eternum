@@ -1,8 +1,27 @@
+import { useEffect } from "react";
 import { Link, Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import Index from "./routes";
 import Construction from "./routes/construction";
 
 function App() {
+  useEffect(() => {
+    const initTelegram = () => {
+      if (!window.Telegram?.WebApp) {
+        setTimeout(initTelegram, 100);
+        return;
+      }
+
+      try {
+        window.Telegram.WebApp.ready();
+        window.Telegram.WebApp.expand();
+      } catch (error) {
+        alert(`Failed to initialize Telegram Web App: ${error instanceof Error ? error.message : String(error)}`);
+      }
+    };
+
+    initTelegram();
+  }, []);
+
   return (
     <Router>
       <div className="min-h-screen bg-gray-900">
