@@ -19,6 +19,7 @@ import { lazy, Suspense, useEffect, useMemo, useState } from "react";
 import { Redirect } from "wouter";
 import { env } from "../../../env";
 import { IS_MOBILE } from "../config";
+import { Onboarding } from "./onboarding";
 
 // Lazy load components
 const SelectedArmy = lazy(() =>
@@ -85,7 +86,6 @@ const TopLeftNavigation = lazy(() =>
 const EventStream = lazy(() =>
   import("../modules/stream/event-stream").then((module) => ({ default: module.EventStream })),
 );
-const Onboarding = lazy(() => import("./onboarding").then((module) => ({ default: module.Onboarding })));
 const OrientationOverlay = lazy(() =>
   import("../components/overlays/orientation-overlay").then((module) => ({ default: module.OrientationOverlay })),
 );

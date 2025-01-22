@@ -6,6 +6,7 @@ import mkcert from "vite-plugin-mkcert";
 import { VitePWA } from "vite-plugin-pwa";
 import topLevelAwait from "vite-plugin-top-level-await";
 import wasm from "vite-plugin-wasm";
+
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
@@ -66,6 +67,7 @@ export default defineConfig({
   },
   build: {
     target: "esnext",
+    sourcemap: true,
     rollupOptions: {
       input: {
         main: resolve(__dirname, "index.html"),
@@ -74,17 +76,9 @@ export default defineConfig({
       },
       maxParallelFileOps: 2,
       cache: false,
-      // external: ["react", "react-dom"],
       output: {
-        globals: {
-          react: "React",
-          "react-dom": "ReactDOM",
-        },
-        sourcemap: true,
         manualChunks: (id) => {
-          if (id.includes("node_modules")) {
-            return "vendor";
-          }
+          if (id.includes("node_modules")) return "vendor";
         },
         inlineDynamicImports: false,
         sourcemapIgnoreList: (relativeSourcePath) => {
@@ -95,10 +89,7 @@ export default defineConfig({
     },
   },
   optimizeDeps: {
-    exclude: [
-      "js-big-decimal",
-      "@bibliothecadao/eternum", // Add your dependency here
-    ],
+    exclude: ["@bibliothecadao/eternum"],
   },
   publicDir: "../../public",
 });
