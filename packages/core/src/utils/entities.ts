@@ -101,7 +101,7 @@ export const getEntityName = (entityId: ID, components: ClientComponents, abbrev
 export const getAddressName = (address: ContractAddress, components: ClientComponents) => {
   const addressName = getComponentValue(components.AddressName, getEntityIdFromKeys([BigInt(address)]));
 
-  return addressName ? addressName.name.toString() : undefined;
+  return addressName ? shortString.decodeShortString(addressName.name.toString()) : undefined;
 };
 
 export const getAddressNameFromEntity = (entityId: ID, components: ClientComponents) => {
@@ -110,7 +110,7 @@ export const getAddressNameFromEntity = (entityId: ID, components: ClientCompone
 
   const addressName = getComponentValue(components.AddressName, getEntityIdFromKeys([BigInt(address)]));
 
-  return addressName ? addressName.name.toString() : undefined;
+  return addressName ? shortString.decodeShortString(addressName.name.toString()) : undefined;
 };
 
 export const getAddressFromEntity = (entityId: ID, components: ClientComponents): ContractAddress | undefined => {
