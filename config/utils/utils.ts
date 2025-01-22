@@ -12,7 +12,7 @@ import sepoliaConfig from "../environments/data/sepolia.json";
 import slotConfig from "../environments/data/slot.json";
 
 /** Valid chain identifiers */
-export type Chain = "sepolia" | "mainnet" | "slot";
+export type Chain = "local" | "sepolia" | "mainnet" | "slot";
 
 /**
  * Retrieves the season addresses for a specific chain
