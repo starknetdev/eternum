@@ -47,21 +47,20 @@ export const LoadingScreen = ({ backgroundImage }: { backgroundImage: string }) 
     <OnboardingContainer backgroundImage={backgroundImage} controller={false}>
       <StepContainer tos={false} transition={false} loading={true}>
         <div className="mt-10 relative bottom-1 text-center text-xl">{`${statements[currentStatement]}`}</div>
-        <div className="relative bottom-1 text-center text-xl">{`We are experiencing high loading times. Please be patient.`}</div>
       </StepContainer>
     </OnboardingContainer>
   );
 };
 
 export function CountdownTimer({ backgroundImage }: { backgroundImage: string }) {
-  const { seasonStart, countdown, nextBlockTimestamp } = useSeasonStart();
+  const { seasonStart, countdown, currentBlockTimestamp } = useSeasonStart();
 
   const days = Math.floor(Number(countdown) / (3600 * 24));
   const hours = Math.floor((Number(countdown) % (3600 * 24)) / 3600);
   const minutes = Math.floor((Number(countdown) % 3600) / 60);
   const seconds = Number(countdown) % 60;
 
-  if (countdown < 0 || nextBlockTimestamp === 0n || seasonStart === 0n) return null;
+  if (countdown < 0 || currentBlockTimestamp === 0n || seasonStart === 0n) return null;
 
   return (
     <div className="relative min-h-screen w-full pointer-events-auto">

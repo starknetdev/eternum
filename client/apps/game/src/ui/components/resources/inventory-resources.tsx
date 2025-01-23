@@ -1,7 +1,7 @@
-import { debouncedAddToSubscription } from "@/dojo/debounced-queries";
-import { useUIStore } from "@/hooks/store/use-ui-store";
+import { debouncedGetEntitiesFromTorii } from "@/dojo/debounced-queries";
 import { ResourceCost } from "@/ui/elements/resource-cost";
 import { divideByPrecision } from "@/ui/utils/utils";
+import { getBlockTimestamp } from "@/utils/timestamp";
 import { getBalance, getInventoryResources, ID, Resource, ResourcesIds } from "@bibliothecadao/eternum";
 import { useDojo } from "@bibliothecadao/react";
 import { useMemo, useState } from "react";
@@ -25,12 +25,12 @@ export const InventoryResources = ({
   textSize?: "xxs" | "xs" | "sm" | "md" | "lg";
 }) => {
   const dojo = useDojo();
-  const currentDefaultTick = useUIStore.getState().currentDefaultTick;
+  const currentDefaultTick = getBlockTimestamp().currentDefaultTick;
   const [showAll, setShowAll] = useState(false);
 
   const inventoriesResources = useMemo(
-    () => getInventoryResources(entityId, dojo.setup.components),
-    [entityId, dojo.setup.components],
+    () => getInventoryResources(entityId, dojo.network.contractComponents as any),
+    [entityId, dojo.network.contractComponents],
   );
 
   const [isSyncing, setIsSyncing] = useState(false);
@@ -40,7 +40,7 @@ export const InventoryResources = ({
       dynamic.map(
         (resourceId): Resource => ({
           resourceId,
-          amount: getBalance(entityId, resourceId, currentDefaultTick, dojo.setup.components).balance,
+          amount: getBalance(entityId, resourceId, currentDefaultTick, dojo.network.contractComponents as any).balance,
         }),
       ),
     [dynamic, entityId, getBalance],
@@ -59,9 +59,12 @@ export const InventoryResources = ({
       setIsSyncing(true);
       try {
         console.log("AddToSubscriptionStart - 4");
-        await debouncedAddToSubscription(dojo.network.toriiClient, dojo.network.contractComponents as any, [
-          entityId.toString(),
-        ]);
+        await debouncedGetEntitiesFromTorii(
+          dojo.network.toriiClient,
+          dojo.network.contractComponents as any,
+          [entityId.toString()],
+          ["s1_eternum-DetachedResource"],
+        );
         localStorage.setItem(cacheKey, now.toString());
       } catch (error) {
         console.error("Fetch failed", error);
