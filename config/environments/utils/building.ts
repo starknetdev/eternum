@@ -18,10 +18,7 @@ export const BUILDING_CAPACITY: { [key in BuildingType]: number } = {
   [BuildingType.Stable1]: 0,
   [BuildingType.Stable2]: 0,
   [BuildingType.Stable3]: 0,
-  [BuildingType.TradingPost]: 0,
   [BuildingType.WorkersHut]: 5,
-  [BuildingType.WatchTower]: 0,
-  [BuildingType.Walls]: 0,
   [BuildingType.Storehouse]: 0,
 };
 
@@ -43,10 +40,7 @@ export const BUILDING_POPULATION: { [key in BuildingType]: number } = {
   [BuildingType.Stable1]: 3,
   [BuildingType.Stable2]: 3,
   [BuildingType.Stable3]: 3,
-  [BuildingType.TradingPost]: 2,
   [BuildingType.WorkersHut]: 0,
-  [BuildingType.WatchTower]: 2,
-  [BuildingType.Walls]: 2,
   [BuildingType.Storehouse]: 2,
 };
 
@@ -68,10 +62,7 @@ export const BUILDING_RESOURCE_PRODUCED: { [key in BuildingType]: number } = {
   [BuildingType.Stable1]: ResourcesIds.Paladin,
   [BuildingType.Stable2]: ResourcesIds.PaladinT2,
   [BuildingType.Stable3]: ResourcesIds.PaladinT3,
-  [BuildingType.TradingPost]: 0,
   [BuildingType.WorkersHut]: 0,
-  [BuildingType.WatchTower]: 0,
-  [BuildingType.Walls]: 0,
   [BuildingType.Storehouse]: 0,
 };
 
@@ -81,93 +72,106 @@ export const OTHER_BUILDING_COSTS: ResourceInputs = {
   [BuildingType.Bank]: [],
   [BuildingType.FragmentMine]: [],
   [BuildingType.Resource]: [], // resource building costs are handled in `RESOURCE_BUILDING_COSTS`
-  [BuildingType.Farm]: [{ resource: ResourcesIds.Fish, amount: 450_000 }],
-  [BuildingType.FishingVillage]: [{ resource: ResourcesIds.Wheat, amount: 450_000 }],
-
-  [BuildingType.Market]: [
-    { resource: ResourcesIds.Fish, amount: 750_000 },
-    { resource: ResourcesIds.Stone, amount: 125_000 },
-    { resource: ResourcesIds.Obsidian, amount: 50_000 },
-    { resource: ResourcesIds.Ruby, amount: 25_000 },
-    { resource: ResourcesIds.DeepCrystal, amount: 5_000 },
+  
+  // Basic Buildings - primarily Common resources
+  [BuildingType.Farm]: [
+    { resource: ResourcesIds.Wood, amount: 500_000 },
+    { resource: ResourcesIds.Stone, amount: 300_000 },
+    { resource: ResourcesIds.Coal, amount: 200_000 }
   ],
+  [BuildingType.FishingVillage]: [
+    { resource: ResourcesIds.Wood, amount: 500_000 },
+    { resource: ResourcesIds.Stone, amount: 300_000 },
+    { resource: ResourcesIds.Coal, amount: 200_000 }
+  ],
+  [BuildingType.WorkersHut]: [
+    { resource: ResourcesIds.Wood, amount: 400_000 },
+    { resource: ResourcesIds.Stone, amount: 250_000 },
+    { resource: ResourcesIds.Coal, amount: 150_000 }
+  ],
+
+  // T1 Military Buildings - primarily Uncommon resources
   [BuildingType.Barracks1]: [
-    { resource: ResourcesIds.Wheat, amount: 1_000_000 },
-    { resource: ResourcesIds.Wood, amount: 75_000 },
-    { resource: ResourcesIds.Coal, amount: 75_000 },
-    { resource: ResourcesIds.Silver, amount: 50_000 },
-    { resource: ResourcesIds.Gold, amount: 45_000 },
+    { resource: ResourcesIds.Copper, amount: 800_000 },
+    { resource: ResourcesIds.Silver, amount: 100_000 },
+    { resource: ResourcesIds.ColdIron, amount: 75_000 },
+    { resource: ResourcesIds.Wood, amount: 50_000 }
   ],
   [BuildingType.ArcheryRange1]: [
-    { resource: ResourcesIds.Fish, amount: 1_000_000 },
-    { resource: ResourcesIds.Wood, amount: 75_000 },
+    { resource: ResourcesIds.Copper, amount: 800_000 },
+    { resource: ResourcesIds.Hartwood, amount: 100_000 },
     { resource: ResourcesIds.Obsidian, amount: 75_000 },
-    { resource: ResourcesIds.Gold, amount: 25_000 },
-    { resource: ResourcesIds.Hartwood, amount: 25_000 },
+    { resource: ResourcesIds.Wood, amount: 50_000 }
   ],
   [BuildingType.Stable1]: [
-    { resource: ResourcesIds.Wheat, amount: 1_000_000 },
-    { resource: ResourcesIds.Wood, amount: 75_000 },
-    { resource: ResourcesIds.Silver, amount: 75_000 },
-    { resource: ResourcesIds.Ironwood, amount: 35_000 },
-    { resource: ResourcesIds.Gold, amount: 25_000 },
+    { resource: ResourcesIds.Copper, amount: 800_000 },
+    { resource: ResourcesIds.Silver, amount: 100_000 },
+    { resource: ResourcesIds.Ironwood, amount: 75_000 },
+    { resource: ResourcesIds.Wood, amount: 50_000 }
   ],
+
+  // T2 Military Buildings - include Rare resources
   [BuildingType.Barracks2]: [
-    { resource: ResourcesIds.Wheat, amount: 1_000_000 },
-    { resource: ResourcesIds.Wood, amount: 75_000 },
-    { resource: ResourcesIds.Coal, amount: 75_000 },
-    { resource: ResourcesIds.Silver, amount: 50_000 },
-    { resource: ResourcesIds.Gold, amount: 45_000 },
+    { resource: ResourcesIds.Copper, amount: 800_000 },
+    { resource: ResourcesIds.Silver, amount: 100_000 },
+    { resource: ResourcesIds.ColdIron, amount: 75_000 },
+    { resource: ResourcesIds.Gold, amount: 50_000 },
+    { resource: ResourcesIds.Diamonds, amount: 25_000 }
   ],
   [BuildingType.ArcheryRange2]: [
-    { resource: ResourcesIds.Fish, amount: 1_000_000 },
-    { resource: ResourcesIds.Wood, amount: 75_000 },
+    { resource: ResourcesIds.Copper, amount: 800_000 },
+    { resource: ResourcesIds.Hartwood, amount: 100_000 },
     { resource: ResourcesIds.Obsidian, amount: 75_000 },
-    { resource: ResourcesIds.Gold, amount: 25_000 },
-    { resource: ResourcesIds.Hartwood, amount: 25_000 },
+    { resource: ResourcesIds.Diamonds, amount: 50_000 },
+    { resource: ResourcesIds.Ruby, amount: 25_000 }
   ],
   [BuildingType.Stable2]: [
-    { resource: ResourcesIds.Wheat, amount: 1_000_000 },
-    { resource: ResourcesIds.Wood, amount: 75_000 },
-    { resource: ResourcesIds.Silver, amount: 75_000 },
-    { resource: ResourcesIds.Ironwood, amount: 35_000 },
-    { resource: ResourcesIds.Gold, amount: 25_000 },
+    { resource: ResourcesIds.Copper, amount: 800_000 },
+    { resource: ResourcesIds.Silver, amount: 100_000 },
+    { resource: ResourcesIds.Ironwood, amount: 75_000 },
+    { resource: ResourcesIds.Gold, amount: 50_000 },
+    { resource: ResourcesIds.Diamonds, amount: 25_000 }
   ],
+
+  // T3 Military Buildings - include Epic and Legendary resources
   [BuildingType.Barracks3]: [
-    { resource: ResourcesIds.Wheat, amount: 1_000_000 },
-    { resource: ResourcesIds.Wood, amount: 75_000 },
-    { resource: ResourcesIds.Coal, amount: 75_000 },
-    { resource: ResourcesIds.Silver, amount: 50_000 },
-    { resource: ResourcesIds.Gold, amount: 45_000 },
+    { resource: ResourcesIds.Copper, amount: 800_000 },
+    { resource: ResourcesIds.Silver, amount: 100_000 },
+    { resource: ResourcesIds.ColdIron, amount: 75_000 },
+    { resource: ResourcesIds.Gold, amount: 50_000 },
+    { resource: ResourcesIds.Adamantine, amount: 25_000 },
+    { resource: ResourcesIds.TrueIce, amount: 15_000 }
   ],
   [BuildingType.ArcheryRange3]: [
-    { resource: ResourcesIds.Fish, amount: 1_000_000 },
-    { resource: ResourcesIds.Wood, amount: 75_000 },
+    { resource: ResourcesIds.Copper, amount: 800_000 },
+    { resource: ResourcesIds.Hartwood, amount: 100_000 },
     { resource: ResourcesIds.Obsidian, amount: 75_000 },
-    { resource: ResourcesIds.Gold, amount: 25_000 },
-    { resource: ResourcesIds.Hartwood, amount: 25_000 },
+    { resource: ResourcesIds.Diamonds, amount: 50_000 },
+    { resource: ResourcesIds.DeepCrystal, amount: 25_000 },
+    { resource: ResourcesIds.TwilightQuartz, amount: 15_000 }
   ],
   [BuildingType.Stable3]: [
-    { resource: ResourcesIds.Wheat, amount: 1_000_000 },
-    { resource: ResourcesIds.Wood, amount: 75_000 },
-    { resource: ResourcesIds.Silver, amount: 75_000 },
-    { resource: ResourcesIds.Ironwood, amount: 35_000 },
-    { resource: ResourcesIds.Gold, amount: 25_000 },
+    { resource: ResourcesIds.Copper, amount: 800_000 },
+    { resource: ResourcesIds.Silver, amount: 100_000 },
+    { resource: ResourcesIds.Ironwood, amount: 75_000 },
+    { resource: ResourcesIds.Gold, amount: 50_000 },
+    { resource: ResourcesIds.Mithral, amount: 25_000 },
+    { resource: ResourcesIds.Dragonhide, amount: 15_000 }
   ],
-  [BuildingType.TradingPost]: [],
-  [BuildingType.WorkersHut]: [
-    { resource: ResourcesIds.Wheat, amount: 300_000 },
-    { resource: ResourcesIds.Stone, amount: 75_000 },
-    { resource: ResourcesIds.Wood, amount: 75_000 },
-    { resource: ResourcesIds.Coal, amount: 75_000 },
+
+  // Specialist Buildings - mix of resources across tiers
+  [BuildingType.Market]: [
+    { resource: ResourcesIds.Wood, amount: 500_000 },
+    { resource: ResourcesIds.Stone, amount: 300_000 },
+    { resource: ResourcesIds.Hartwood, amount: 100_000 },
+    { resource: ResourcesIds.Diamonds, amount: 50_000 },
+    { resource: ResourcesIds.DeepCrystal, amount: 25_000 }
   ],
-  [BuildingType.WatchTower]: [],
-  [BuildingType.Walls]: [],
   [BuildingType.Storehouse]: [
-    { resource: ResourcesIds.Fish, amount: 1_000_000 },
-    { resource: ResourcesIds.Coal, amount: 75_000 },
-    { resource: ResourcesIds.Stone, amount: 75_000 },
-    { resource: ResourcesIds.Sapphire, amount: 10_000 },
+    { resource: ResourcesIds.Wood, amount: 500_000 },
+    { resource: ResourcesIds.Stone, amount: 300_000 },
+    { resource: ResourcesIds.Hartwood, amount: 100_000 },
+    { resource: ResourcesIds.Sapphire, amount: 25_000 }
   ],
 };
 

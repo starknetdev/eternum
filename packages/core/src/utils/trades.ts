@@ -39,20 +39,19 @@ export const getDetachedResources = (entityId: ID, components: ContractComponent
 
 export const getTradeResources = (tradeId: ID, components: ContractComponents): TradeResources => {
   let trade = getComponentValue(components.Trade, getEntityIdFromKeys([BigInt(tradeId)]));
-  console.log({ trade })
 
   if (!trade) return { takerGets: [], makerGets: [] };
 
   let takerGets = [
     {
       resourceId: Number(trade.maker_gives_resource_type),
-      amount: Number(trade.maker_gives_min_resource_amount),
+      amount: Number(BigInt(trade.maker_gives_min_resource_amount) * trade.maker_gives_max_count),
     },
   ];
   let makerGets = [
     {
-      resourceId: Number(trade.taker_pays_min_lords_amount),
-      amount: Number(trade.taker_pays_min_lords_amount),
+      resourceId: Number(trade.taker_pays_resource_type),
+      amount: Number(BigInt(trade.taker_pays_min_resource_amount) * trade.maker_gives_max_count),
     },
   ];
 
@@ -72,8 +71,8 @@ export const getTradeResourcesFromEntityViewpoint = (
     trade.maker_id === entityId
       ? [
           {
-            resourceId: Number(trade.taker_pays_min_lords_amount),
-            amount: Number(trade.taker_pays_min_lords_amount),
+            resourceId: Number(trade.taker_pays_resource_type),
+            amount: Number(trade.taker_pays_min_resource_amount),
           },
         ]
       : [
@@ -93,8 +92,8 @@ export const getTradeResourcesFromEntityViewpoint = (
         ]
       : [
           {
-            resourceId: Number(trade.taker_pays_min_lords_amount),
-            amount: Number(trade.taker_pays_min_lords_amount),
+            resourceId: Number(trade.taker_pays_resource_type),
+            amount: Number(trade.taker_pays_min_resource_amount),
           },
         ];
 

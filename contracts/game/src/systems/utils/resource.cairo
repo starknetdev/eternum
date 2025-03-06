@@ -171,10 +171,8 @@ pub impl iResourceTransferImpl of iResourceTransferTrait {
         assert!(to_coord.is_non_zero(), "to_entity is not stationary");
         assert!(from_coord != to_coord, "from_entity and to_entity are in the same location");
 
-        let mut resources_clone = resources.clone();
         let donkey_speed = SpeedImpl::for_donkey(ref world);
-        let travel_time = starknet::get_block_timestamp()
-            + iDistanceKmImpl::time_required(ref world, from_coord, to_coord, donkey_speed, pickup);
+        let travel_time = iDistanceKmImpl::time_required(ref world, from_coord, to_coord, donkey_speed, pickup);
         let (arrival_day, arrival_slot) = ResourceArrivalImpl::arrival_slot(ref world, travel_time);
 
         let mut to_structure_resources_array = ResourceArrivalImpl::read_slot(
@@ -184,34 +182,32 @@ pub impl iResourceTransferImpl of iResourceTransferTrait {
             ref world, to_id, arrival_day,
         );
         let mut total_resources_weight: u128 = 0;
+        let mut index_count: u32 = 0;
         loop {
-            match resources_clone.pop_front() {
-                Option::Some((
-                    resource_type, resource_amount,
-                )) => {
-                    // spend from from_structure balance
-                    let (resource_type, resource_amount) = (*resource_type, *resource_amount);
-                    let resource_weight_grams: u128 = ResourceWeightImpl::grams(ref world, resource_type);
-                    let resource_weight: u128 = resource_amount * resource_weight_grams;
-                    total_resources_weight += resource_weight;
-
-                    if mint == false {
-                        let mut from_entity_resource = SingleResourceStoreImpl::retrieve(
-                            ref world, from_id, resource_type, ref from_weight, resource_weight_grams, from_structure,
-                        );
-                        from_entity_resource.spend(resource_amount, ref from_weight, resource_weight_grams);
-                        from_entity_resource.store(ref world);
-                    }
-                },
-                Option::None => { break; },
+            if index_count >= resources.len() {
+                break;
             }
+            let (resource_type, resource_amount) = resources.at(index_count);
+            // spend from from_structure balance
+            let (resource_type, resource_amount) = (*resource_type, *resource_amount);
+            let resource_weight_grams: u128 = ResourceWeightImpl::grams(ref world, resource_type);
+            let resource_weight: u128 = resource_amount * resource_weight_grams;
+            total_resources_weight += resource_weight;
+
+            if mint == false {
+                let mut from_entity_resource = SingleResourceStoreImpl::retrieve(
+                    ref world, from_id, resource_type, ref from_weight, resource_weight_grams, from_structure,
+                );
+                from_entity_resource.spend(resource_amount, ref from_weight, resource_weight_grams);
+                from_entity_resource.store(ref world);
+            }
+            index_count += 1;
         };
 
         // add resource to to_structure resource arrivals
         ResourceArrivalImpl::slot_increase_balances(
             ref to_structure_resources_array, resources, ref to_structure_resource_arrival_day_total,
         );
-        // update to_structure resource arrivals
         ResourceArrivalImpl::write_slot(ref world, to_id, arrival_day, arrival_slot, to_structure_resources_array);
         ResourceArrivalImpl::write_day_total(ref world, to_id, arrival_day, to_structure_resource_arrival_day_total);
 
@@ -249,6 +245,8 @@ pub impl iResourceTransferImpl of iResourceTransferTrait {
         let mut to_structure_resource_arrival_day_total = ResourceArrivalImpl::read_day_total(
             ref world, to_structure_id, day,
         );
+
+        // todo: delay delivery by day and slot
         let mut index_counted: u8 = 0;
         let mut total_amount_deposited: u128 = 0;
         loop {

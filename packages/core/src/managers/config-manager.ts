@@ -192,13 +192,14 @@ export class ClientConfigManager {
     };
   }
 
+  // weight in grams, per actual resource (without precision)
   getResourceWeight(resourceId: number): number {
     return this.getValueOrDefault(() => {
-      const weightConfig = getComponentValue(
+      const weightNanogram = getComponentValue(
         this.components.WeightConfig,
         getEntityIdFromKeys([WORLD_CONFIG_ID, BigInt(resourceId)]),
-      );
-      return Number(weightConfig?.weight_gram ?? 0);
+      )?.weight_nanogram;
+      return Number(weightNanogram ?? 0);
     }, 0);
   }
 
@@ -478,7 +479,7 @@ export class ClientConfigManager {
     }, 0);
   }
 
-  getSpeedConfig(entityType: number): number {
+  getSpeedConfig(entityType: EntityType): number {
     return this.getValueOrDefault(() => {
       const speedConfig = getComponentValue(
         this.components.WorldConfig,
@@ -591,7 +592,7 @@ export class ClientConfigManager {
   getHyperstructureRequiredAmountPerTier(resourceTier: ResourceTier, randomness: bigint): number {
     const hyperstructureResourceConfig = getComponentValue(
       this.components.HyperstructureResourceConfig,
-      getEntityIdFromKeys([HYPERSTRUCTURE_CONFIG_ID, BigInt(resourceTier)]),
+      getEntityIdFromKeys([BigInt(resourceTier)]),
     );
 
     if (!hyperstructureResourceConfig) {
@@ -761,18 +762,6 @@ export class ClientConfigManager {
         endedAt: 0n,
       },
     );
-  }
-
-  getWeightLessResources() {
-    return this.getValueOrDefault(() => {
-      const weightlessResources: ResourcesIds[] = [];
-      for (const resourceId of Object.values(ResourcesIds).filter(Number.isInteger)) {
-        if (this.getResourceWeight(Number(resourceId)) === 0) {
-          weightlessResources.push(Number(resourceId));
-        }
-      }
-      return weightlessResources;
-    }, []);
   }
 }
 

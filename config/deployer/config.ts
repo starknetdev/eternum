@@ -576,11 +576,11 @@ export const setWeightConfig = async (config: Config) => {
   const calldataArray = Object.entries(config.config.resources.resourceWeightsGrams).map(([resourceId, weight]) => {
     const calldata = {
       entity_type: resourceId,
-      weight_gram: weight,
+      weight_nanogram: weight,
     };
     console.log(
       chalk.cyan(
-        `    │  ${chalk.gray(String(ResourcesIds[calldata.entity_type as keyof typeof ResourcesIds]).padEnd(12))} ${chalk.white(addCommas(calldata.weight_gram / 1000))} kg`,
+        `    │  ${chalk.gray(String(ResourcesIds[calldata.entity_type as keyof typeof ResourcesIds]).padEnd(12))} ${chalk.white(addCommas(calldata.weight_nanogram / 1000))} kg`,
       ),
     );
     return calldata;

@@ -392,9 +392,10 @@ export class EternumProvider extends EnhancedDojoProvider {
       maker_id,
       taker_id,
       maker_gives_resource_type,
+      taker_pays_resource_type,
       maker_gives_min_resource_amount,
       maker_gives_max_count,
-      taker_pays_min_lords_amount,
+      taker_pays_min_resource_amount,
       expires_at,
       signer,
     } = props;
@@ -406,9 +407,10 @@ export class EternumProvider extends EnhancedDojoProvider {
         maker_id,
         taker_id,
         maker_gives_resource_type,
+        taker_pays_resource_type,
         maker_gives_min_resource_amount,
         maker_gives_max_count,
-        taker_pays_min_lords_amount,
+        taker_pays_min_resource_amount,
         expires_at,
       ],
     });
@@ -1206,7 +1208,7 @@ export class EternumProvider extends EnhancedDojoProvider {
     return await this.executeAndCheckTransaction(signer, {
       contractAddress: getContractByName(this.manifest, `${NAMESPACE}-liquidity_systems`),
       entrypoint: "remove",
-      calldata: [bank_entity_id, entity_id, resource_type, shares, false],
+      calldata: [bank_entity_id, entity_id, resource_type, shares],
     });
   }
 
@@ -1747,7 +1749,7 @@ export class EternumProvider extends EnhancedDojoProvider {
         return {
           contractAddress: getContractByName(this.manifest, `${NAMESPACE}-config_systems`),
           entrypoint: "set_resource_weight_config",
-          calldata: [call.entity_type, call.weight_gram],
+          calldata: [call.entity_type, call.weight_nanogram],
         };
       }),
     );

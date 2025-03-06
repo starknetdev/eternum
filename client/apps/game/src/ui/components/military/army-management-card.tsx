@@ -66,9 +66,7 @@ export const ArmyCreate = ({ owner_entity, army, armyManager, isExplorer, guardS
   };
 
   const handleTierChange = (tier: TroopTier) => {
-    if (!army || army.troops.count === 0n) {
-      setSelectedTier(tier);
-    }
+    setSelectedTier(tier);
   };
 
   const handleBuyArmy = async (isExplorer: boolean, troopType: TroopType, troopTier: TroopTier, troopCount: number) => {
@@ -159,7 +157,7 @@ export const ArmyCreate = ({ owner_entity, army, armyManager, isExplorer, guardS
         {troops.map((troop) => {
           const balance = getBalance(
             owner_entity,
-            getTroopResourceId(troop.troopType, TroopTier.T1),
+            getTroopResourceId(troop.troopType, selectedTier),
             currentDefaultTick,
             components,
           ).balance;
@@ -189,7 +187,7 @@ export const ArmyCreate = ({ owner_entity, army, armyManager, isExplorer, guardS
                   <ResourceIcon
                     withTooltip={false}
                     resource={
-                      resources.find((resource) => resource.id === getTroopResourceId(troop.troopType, TroopTier.T1))
+                      resources.find((resource) => resource.id === getTroopResourceId(troop.troopType, selectedTier))
                         ?.trait || ""
                     }
                     size="lg"
