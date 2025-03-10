@@ -10,6 +10,7 @@ pub trait ITroopBattleSystems<T> {
     fn attack_guard_vs_explorer(
         ref self: T, structure_id: ID, structure_guard_slot: GuardSlot, explorer_id: ID, explorer_direction: Direction,
     );
+    fn raid_explorer_vs_guard(ref self: T, explorer_id: ID, structure_id: ID, structure_direction: Direction);
 }
 
 
@@ -370,5 +371,139 @@ pub mod troop_battle_systems {
                 StructureTroopGuardStoreImpl::store(ref structure_guards_aggressor, ref world, structure_id);
             }
         }
+
+
+        fn raid_explorer_vs_guard(
+            ref self: ContractState, explorer_id: ID, structure_id: ID, structure_direction: Direction,
+        ) {
+            let mut world = self.world(DEFAULT_NS());
+            SeasonImpl::assert_season_is_not_over(world);
+
+            // ensure caller owns aggressor
+            let mut explorer_aggressor: ExplorerTroops = world.read_model(explorer_id);
+            let explorer_owner: starknet::ContractAddress = StructureOwnerStoreImpl::retrieve(
+                ref world, explorer_aggressor.owner,
+            );
+            explorer_owner.assert_caller_owner();
+
+            // ensure caller does not own defender
+            let mut guarded_structure_owner: starknet::ContractAddress = StructureOwnerStoreImpl::retrieve(
+                ref world, structure_id,
+            );
+            guarded_structure_owner.assert_caller_not_owner();
+
+            // ensure aggressor has troops
+            assert!(explorer_aggressor.troops.count.is_non_zero(), "aggressor has no troops");
+
+            // ensure structure id is for a structure
+            let mut guarded_structure: StructureBase = StructureBaseStoreImpl::retrieve(ref world, structure_id);
+            assert!(guarded_structure.category != StructureCategory::None.into(), "defender is not a structure");
+
+            // ensure structure is not cloaked
+            let tick = TickImpl::get_tick_config(ref world);
+            let battle_config: BattleConfig = WorldConfigUtilImpl::get_member(world, selector!("battle_config"));
+            assert!(StructureBaseImpl::is_not_cloaked(guarded_structure, battle_config, tick), "structure is cloaked");
+
+            // get guard troops
+            let mut guard_defender: GuardTroops = StructureTroopGuardStoreImpl::retrieve(ref world, structure_id);
+
+            // let (alpha_damage_dealt, bravo_damage_dealt) 
+            //     = self.damage(
+            //         ref bravo, 
+            //         biome, 
+            //         troop_stamina_config, 
+            //         troop_damage_config, 
+            //         current_tick
+            //     );
+
+            // let mut combined
+            let guard_slot: Option<GuardSlot> = guard_defender
+                .next_attack_slot(guarded_structure.troop_max_guard_count.into());
+
+            // claim structure if there are no guard troops. it is tried again after the attack
+            if guard_slot.is_none() {
+                if guarded_structure.category != StructureCategory::Village.into() {
+                    StructureOwnerStoreImpl::store(explorer_owner, ref world, structure_id);
+                }
+                return;
+            }
+
+            // get guard troops
+            let guard_slot: GuardSlot = guard_slot.unwrap();
+            let (mut guard_troops, mut guard_destroyed_tick): (Troops, u32) = guard_defender.from_slot(guard_slot);
+            assert!(guard_troops.count.is_non_zero(), "defender has no troops");
+
+            // ensure explorer is adjacent to structure
+            assert!(
+                explorer_aggressor.coord.neighbor(structure_direction) == guarded_structure.coord(),
+                "explorer is not adjacent to structure",
+            );
+
+            // aggressor attacks defender
+            let mut explorer_aggressor_troops: Troops = explorer_aggressor.troops;
+            let defender_biome: Biome = get_biome(
+                guarded_structure.coord().x.into(), guarded_structure.coord().y.into(),
+            );
+            let troop_damage_config: TroopDamageConfig = CombatConfigImpl::troop_damage_config(ref world);
+            let troop_stamina_config: TroopStaminaConfig = CombatConfigImpl::troop_stamina_config(ref world);
+            let tick = TickImpl::get_tick_config(ref world);
+            explorer_aggressor_troops
+                .attack(ref guard_troops, defender_biome, troop_stamina_config, troop_damage_config, tick.current());
+
+            // update explorer
+            explorer_aggressor.troops = explorer_aggressor_troops;
+            if explorer_aggressor_troops.count.is_zero() {
+                let mut explorer_aggressor_owner_structure: StructureBase = StructureBaseStoreImpl::retrieve(
+                    ref world, explorer_aggressor.owner,
+                );
+                let mut explorer_aggressor_structure_explorers_list: Array<ID> =
+                    StructureTroopExplorerStoreImpl::retrieve(
+                    ref world, explorer_aggressor.owner,
+                )
+                    .into();
+                iExplorerImpl::explorer_delete(
+                    ref world,
+                    ref explorer_aggressor,
+                    explorer_aggressor_structure_explorers_list,
+                    ref explorer_aggressor_owner_structure,
+                    explorer_aggressor.owner,
+                );
+            } else {
+                world.write_model(@explorer_aggressor);
+            }
+
+            // update structure guard
+            if guard_troops.count.is_zero() {
+                // delete guard
+                iGuardImpl::delete(
+                    ref world,
+                    structure_id,
+                    ref guarded_structure,
+                    ref guard_defender,
+                    ref guard_troops,
+                    tick.current().try_into().unwrap(),
+                    guard_slot,
+                    tick.current(),
+                );
+
+                // try again to claim structure if there are no guard troops after the attack
+                // and explorer is alive
+                if explorer_aggressor.troops.count.is_non_zero() {
+                    let guard_slot: Option<GuardSlot> = guard_defender
+                        .next_attack_slot(guarded_structure.troop_max_guard_count.into());
+                    if guard_slot.is_none() {
+                        if guarded_structure.category != StructureCategory::Village.into() {
+                            StructureOwnerStoreImpl::store(explorer_owner, ref world, structure_id);
+                        }
+                    }
+                }
+            } else {
+                // update structure guard
+                guard_defender.to_slot(guard_slot, guard_troops, guard_destroyed_tick.into());
+                StructureTroopGuardStoreImpl::store(ref guard_defender, ref world, structure_id);
+            }
+        }
     }
 }
+
+
