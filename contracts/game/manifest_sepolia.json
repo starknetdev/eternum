@@ -2264,7 +2264,11 @@
                   "type": "core::integer::u64"
                 },
                 {
-                  "name": "end_grace_seconds",
+                  "name": "bridge_close_end_grace_seconds",
+                  "type": "core::integer::u32"
+                },
+                {
+                  "name": "point_registration_grace_seconds",
                   "type": "core::integer::u32"
                 }
               ],

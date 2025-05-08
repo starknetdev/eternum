@@ -14927,6 +14927,12 @@
         },
         {
           "members": [],
+          "class_hash": "0x3b97b2e158e90760aa4a944ec1d88c28c44447bc91ac09e703094bf2109c8af",
+          "tag": "s1_eternum-StructureOwnerStats",
+          "selector": "0x1d52c8d6f2bdc7f57662f1790b92a4900fe725cc3e8277418acdde65bb1cd5b"
+        },
+        {
+          "members": [],
           "class_hash": "0x164bc118456658f921e1c6582966392df848a18af20fc8106bebd277187ab4f",
           "tag": "s1_eternum-StructureVillageSlots",
           "selector": "0x60ced96a6248196ca67650c7943d5248807119bcf12ba7f2f90af7983c1a74a"

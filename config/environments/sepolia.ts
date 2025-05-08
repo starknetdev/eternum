@@ -59,7 +59,7 @@ export const SepoliaEternumGlobalConfig: Config = {
   },
   battle: {
     ...CommonEternumGlobalConfig.battle,
-    graceTickCount: 4, // 1 tick so 1 hour grace period for all realms
+    graceTickCount: 4, // 4 ticks depending on armiesTickIntervalInSeconds
   },
   realmUpgradeCosts: {
     ...CommonEternumGlobalConfig.realmUpgradeCosts,
