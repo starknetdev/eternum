@@ -198,6 +198,7 @@ export default class WorldmapScene extends HexagonScene {
     this.systemManager.Quest.onUpdate((update: QuestSystemUpdate) => {
       this.updateQuestHexes(update);
       this.questManager.onUpdate(update);
+      this.updateVisibleChunks();
     });
 
     // add particles
