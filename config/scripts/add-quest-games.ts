@@ -1,9 +1,10 @@
 import { EternumProvider } from "@bibliothecadao/provider";
+import type { Config as EternumConfig } from "@bibliothecadao/types";
 import { getGameManifest } from "@contracts";
 import chalk from "chalk";
+import { nodeReadConfig } from "deployer/config";
 import { Account } from "starknet";
 import { type Chain } from "../utils/utils";
-
 const {
   VITE_PUBLIC_MASTER_ADDRESS,
   VITE_PUBLIC_MASTER_PRIVATE_KEY,
@@ -15,19 +16,9 @@ const {
 const manifest = await getGameManifest(VITE_PUBLIC_CHAIN! as Chain);
 const provider = new EternumProvider(manifest, VITE_PUBLIC_NODE_URL, VITE_PUBLIC_VRF_PROVIDER_ADDRESS);
 const account = new Account(provider.provider, VITE_PUBLIC_MASTER_ADDRESS!, VITE_PUBLIC_MASTER_PRIVATE_KEY!);
+const config: EternumConfig = await nodeReadConfig(VITE_PUBLIC_CHAIN! as Chain);
 
-const quest_games = [
-  {
-    address: "0x25dd1faa4f94d1ddd523d7db4697c10a34a09d7b55b4758995a070fd9d61498",
-    levels: [
-      { target_score: 25, settings_id: 1, time_limit: 14400 },
-      { target_score: 50, settings_id: 2, time_limit: 14400 },
-      { target_score: 50, settings_id: 3, time_limit: 14400 },
-      { target_score: 50, settings_id: 4, time_limit: 14400 },
-    ],
-    overwrite: true,
-  },
-];
+const quest_games = config.questGames;
 
 console.log(
   chalk.cyan(`
